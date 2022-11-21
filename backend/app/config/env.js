@@ -1,9 +1,9 @@
 const env = {
-  database: "csv",
-  username: "root",
-  password: "Acceso.123",
+  database: "xepdb1",
+  username: "demouser",
+  password: "demouser",
   host: "localhost",
-  dialect: "mysql",
+  dialect: "oracle",
   pool: {
     max: 5,
     min: 0,

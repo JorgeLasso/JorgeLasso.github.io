@@ -1,0 +1,15 @@
+node_modules/
+.DS_STORE
+.env
+.idea
+package-lock.json
+server/uploads/
+/.tern-project
+server/tags
+.vscode
+.husky
+.eslintcache
+newrelic_agent.log
+node_modules
+/node_modules
+./node_modules
