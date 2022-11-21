@@ -10,7 +10,7 @@ const csv = require('fast-csv');
 const Json2csvParser = require('json2csv').Parser;
 
 /**
- * Upload Single CSV file/ and Import data to MySQL
+ * Upload Single CSV file/ and Import data 
  * @param {*} req 
  * @param {*} res 
  */
