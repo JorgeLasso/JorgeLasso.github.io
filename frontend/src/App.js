@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import "./App.css";
 import MaterialTable from "material-table";
 import XLSX from "xlsx";
+import axios from "axios";
 
 const EXTENSIONS = ["xlsx", "xls", "csv"];
 function App() {
   const [colDefs, setColDefs] = useState();
   const [data, setData] = useState();
 
-  const getExention = (file) => {
+  const getExtention = (file) => {
     const parts = file.name.split(".");
     const extension = parts[parts.length - 1];
     return EXTENSIONS.includes(extension); //True or False
@@ -38,18 +39,23 @@ function App() {
       const workSheet = workBook.Sheets[workSheetName];
 
       const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
-
       const headers = fileData[0];
       const heads = headers.map((head) => ({ title: head, field: head }));
-      setColDefs(heads);
-
+      const headFilter = heads.filter(
+        (head) =>
+          head.title === "id" ||
+          head.title === "nombres" ||
+          head.title === "apellidos" ||
+          head.title === "telefonos" ||
+          head.title === "direcciones"
+      );
+      setColDefs(headFilter);
       fileData.splice(0, 1);
-
       setData(convertToJson(headers, fileData));
     };
 
     if (file) {
-      if (getExention(file)) {
+      if (getExtention(file)) {
         reader.readAsBinaryString(file);
       } else {
         alert("Archivo inválido, selecciona archivo excel o CSV");
@@ -58,6 +64,20 @@ function App() {
       setData([]);
       setColDefs([]);
     }
+  };
+
+  const saveDB = async () => {
+    const newData = data.map((item) => {
+      return {
+        id: item.id,
+        nombres: item.nombres,
+        apellidos: item.apellidos,
+        telefonos: item.telefonos,
+        direcciones: item.direcciones,
+      };
+    });
+    console.log(newData);
+    await axios.post("/api/file/upload", newData);
   };
 
   return (
@@ -69,7 +89,14 @@ function App() {
         title="Información extraída"
         data={data}
         columns={colDefs}
-        options={{ columnsButton: true, exportButton: true }}
+        actions={[
+          {
+            icon: () => <button>Guardar en Base de datos</button>, // you can pass icon too
+            tooltip: "Guardar en Base de datos",
+            onClick: () => saveDB(),
+            isFreeAction: true,
+          },
+        ]}
       />
     </div>
   );
