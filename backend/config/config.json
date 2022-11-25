@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "demouser",
+    "password": "demouser",
+    "database": "xepdb1",
+    "host": "localhost",
+    "dialect": "oracle"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

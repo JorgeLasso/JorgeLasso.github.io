@@ -3,6 +3,7 @@ import "./App.css";
 import MaterialTable from "material-table";
 import XLSX from "xlsx";
 import axios from "axios";
+axios.defaults.baseURL = "http://localhost:8080";
 
 const EXTENSIONS = ["xlsx", "xls", "csv"];
 function App() {
@@ -41,15 +42,7 @@ function App() {
       const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
       const headers = fileData[0];
       const heads = headers.map((head) => ({ title: head, field: head }));
-      const headFilter = heads.filter(
-        (head) =>
-          head.title === "id" ||
-          head.title === "nombres" ||
-          head.title === "apellidos" ||
-          head.title === "telefonos" ||
-          head.title === "direcciones"
-      );
-      setColDefs(headFilter);
+      setColDefs(heads);
       fileData.splice(0, 1);
       setData(convertToJson(headers, fileData));
     };
@@ -76,8 +69,9 @@ function App() {
         direcciones: item.direcciones,
       };
     });
-    console.log(newData);
-    await axios.post("/api/file/upload", newData);
+    for (let i = 0; i < newData.length; i++) {
+      await axios.post("/api/create", newData[i]);
+    }
   };
 
   return (
@@ -89,6 +83,9 @@ function App() {
         title="Información extraída"
         data={data}
         columns={colDefs}
+        options={{
+          columnsButton: true,
+        }}
         actions={[
           {
             icon: () => <button>Guardar en Base de datos</button>, // you can pass icon too
