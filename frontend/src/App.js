@@ -9,6 +9,7 @@ const EXTENSIONS = ["xlsx", "xls", "csv"];
 function App() {
   const [colDefs, setColDefs] = useState();
   const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
 
   const getExtention = (file) => {
     const parts = file.name.split(".");
@@ -60,18 +61,31 @@ function App() {
   };
 
   const saveDB = async () => {
-    const newData = data.map((item) => {
-      return {
-        id: item.id,
-        nombres: item.nombres,
-        apellidos: item.apellidos,
-        telefonos: item.telefonos,
-        direcciones: item.direcciones,
-      };
-    });
-    for (let i = 0; i < newData.length; i++) {
-      await axios.post("/api/create", newData[i]);
+    try {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+      const newData = data.map((item) => {
+        return {
+          id: item.id,
+          nombres: item.nombres,
+          apellidos: item.apellidos,
+          telefonos: item.telefonos,
+          direcciones: item.direcciones,
+        };
+      });
+      for (let i = 0; i < newData.length; i++) {
+        await axios.post("/api/create", newData[i]);
+      }
+      alert("Datos guardados correctamente");
+    } catch (error) {
+      let requestError = error.response
+        ? error.response.data.message
+        : "Por favor sube un archivo";
+      alert(requestError);
     }
+    setLoading(false);
   };
 
   return (
@@ -88,7 +102,9 @@ function App() {
         }}
         actions={[
           {
-            icon: () => <button>Guardar en Base de datos</button>, // you can pass icon too
+            icon: () => (
+              <button disabled={loading}>Almacenar en Base de Datos</button>
+            ), // you can pass icon too
             tooltip: "Guardar en Base de datos",
             onClick: () => saveDB(),
             isFreeAction: true,

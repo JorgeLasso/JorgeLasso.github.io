@@ -15,6 +15,6 @@ app.listen(port, () => {
 });
 
 db.sequelize
-  .sync({ force: false })
+  .sync({ force: true })
   .then(() => console.log("Conectado a la base de datos"))
   .catch((err) => console.log(err));
